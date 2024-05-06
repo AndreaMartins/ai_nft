@@ -23,6 +23,12 @@ function App() {
     setProvider(provider)
   }
 
+  const submitHandler = async (e) => {
+    e.preventDefault()
+
+    console.log("submitiing...")
+  }
+
   useEffect(() => {
     loadBlockchainData()
   }, [])
@@ -30,8 +36,17 @@ function App() {
   return (
     <div>
       <Navigation account={account} setAccount={setAccount} />
-      <p>Edit App.js to get started.</p>
-
+      <div className="form">
+        <form onSubmit = {submitHandler}>
+          <input type= "text" placeholder='Create a name' onChange={(e) => {setName(e.target.value)}}></input>
+          <input type= "text" placeholder='Create a description' onChange = {(e) => {setDescription(e.target.value)}}></input>
+          <input type= "submit" value = "Crate & Mint"></input>
+        </form>
+        <div className='image'>
+          <img src = "" alt = "AI generated image"/>
+        </div>
+      </div>
+      <p>View&nbsp;<a href= "" target ="_blank" rel = "noreferrer">Metadata</a></p>
     </div>
   );
 }
