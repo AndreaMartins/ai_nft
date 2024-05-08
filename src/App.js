@@ -18,6 +18,10 @@ function App() {
   const [provider, setProvider] = useState(null)
   const [account, setAccount] = useState(null)
 
+  const[name, setName] = useState("")
+  const[description, setDescription] = useState("")
+  const[image, setImage] = useState(null)
+
   const loadBlockchainData = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum)
     setProvider(provider)
@@ -26,7 +30,34 @@ function App() {
   const submitHandler = async (e) => {
     e.preventDefault()
 
-    console.log("submitiing...")
+    const setImage = createImage()
+  }
+
+  const createImage = async () => {
+    console.log("")
+    const URL = `https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-2`
+    
+    const response = await axios({
+      url: URL,
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${process.env.REACT_APP_HUGGING_FACE_API_KEY}`,
+        Accept: 'application/json',
+        'Content-Type' : 'application/json',
+      },
+      data: JSON.stringify({
+        inputs: description, options: {wait_for_model: true},
+      }),
+      responseType: 'arraybuffer',
+    })
+    const type = response.headers['content-type']
+    const data = response.data
+
+    const base64data = Buffer.from(data).toString('base64')
+    const img = `data:${type};base64,` + base64data
+    setImage(img) 
+
+    return data
   }
 
   useEffect(() => {
@@ -43,7 +74,7 @@ function App() {
           <input type= "submit" value = "Crate & Mint"></input>
         </form>
         <div className='image'>
-          <img src = "" alt = "AI generated image"/>
+          <img src ={image} alt = "AI generated image"/>
         </div>
       </div>
       <p>View&nbsp;<a href= "" target ="_blank" rel = "noreferrer">Metadata</a></p>
